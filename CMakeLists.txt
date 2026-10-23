@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 3.23)
+project(UniversalWork VERSION 0.1.0 LANGUAGES CXX)
+
+find_package(Qt6 6.11.1 EXACT REQUIRED COMPONENTS Widgets)
+
+add_executable(universalwork WIN32 MACOSX_BUNDLE src/main.cpp)
+target_compile_features(universalwork PRIVATE cxx_std_17)
+target_link_libraries(universalwork PRIVATE Qt6::Widgets)
+set_target_properties(universalwork PROPERTIES
+    OUTPUT_NAME UniversalWork
+    MACOSX_BUNDLE_BUNDLE_NAME UniversalWork
+    MACOSX_BUNDLE_GUI_IDENTIFIER dev.qichen.universalwork
+    MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}"
+    MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}"
+)
+
+include(CTest)
+if(BUILD_TESTING)
+    add_test(NAME gui_startup COMMAND universalwork --smoke-test -platform offscreen)
+    set_tests_properties(gui_startup PROPERTIES TIMEOUT 15)
+endif()

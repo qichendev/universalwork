@@ -1,0 +1,11 @@
+[settings]
+os=Macos
+arch=armv8
+compiler=apple-clang
+compiler.version=17
+compiler.libcxx=libc++
+compiler.cppstd=gnu17
+build_type=Release
+# ConanCenter's published macOS ARM64 libffi C library uses Clang 13.
+# Keep --build=never: this selects a binary, not an application compiler.
+libffi/*:compiler.version=13
