@@ -1,0 +1,19 @@
+# Local dependency tools and caches
+.deps/
+
+# Build and generated local configuration
+build/
+cmake-build-*/
+CMakeUserPresets.json
+.qt/
+.cache/
+
+# Local credentials and environment files
+.env
+.env.*
+!.env.example
+
+# Editor and operating system files
+.idea/
+*.user
+.DS_Store
