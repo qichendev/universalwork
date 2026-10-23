@@ -69,6 +69,21 @@ If Conan is already installed, use that executable instead of creating another e
 
 The generated `.app` is a development build referencing the Conan cache. A standalone distribution still needs runtime-library/plugin collection, path correction, signing and deployment validation. The Core-only benchmark ZIP is not a deployment package for this Widgets application.
 
+## Debug in VS Code on macOS
+
+Open **this repository's `universalwork` folder** as the VS Code workspace, rather than the parent `qichen` folder. The `.vscode` configuration follows the CodeLLDB + CMake configure/build workflow used by `qis-dds`.
+
+1. Complete the Conan dependency installation above once, generating `build/conan/conan_toolchain.cmake` with the Release dependencies. The VS Code tasks use that generated file; they do not reinstall dependencies on every launch.
+2. Install the recommended **CodeLLDB** extension (`vadimcn.vscode-lldb`). The Microsoft C/C++ extension is recommended for IntelliSense.
+3. Set a breakpoint in `src/main.cpp`, for example on the `setOrganizationName` call.
+4. Select **UniversalWork (macOS Debug)** in Run and Debug, then press **F5**.
+
+The prelaunch task configures and builds under `build/debug`. The application uses a genuine Debug build (`-g`, without optimization), while `CMAKE_MAP_IMPORTED_CONFIG_DEBUG=Release;` maps imported dependencies to the existing Release packages or configuration-independent tools. This permits debugging application code without downloading a second Qt SDK; it does not add debug symbols to Qt itself. The trailing semicolon is intentional so imported Qt tools with configuration-independent locations still resolve.
+
+CMake generates `build/debug/vscode-debug.env` with the Qt plugin directory from the installed package and empty loader overrides. CodeLLDB reads this file to locate the Cocoa platform plugin without globally setting Conan's dynamic-library paths. IntelliSense reads the Debug `compile_commands.json`, generated during configuration. **Cmd+Shift+B** runs the same Debug build task.
+
+Verification: the Debug build succeeded, LLDB stopped at `src/main.cpp:13`, displayed `argc` and the call stack, and continued through native Cocoa startup to exit 0 with `--smoke-test`. This was verified with the system LLDB; the VS Code UI session itself was not automated. The CodeLLDB extension is already installed on the machine used for this check.
+
 ## Status
 
 Conan/CMake configuration and a minimal Qt Widgets window are implemented. Both offscreen GUI initialization and the native macOS Cocoa startup check passed using cached binary dependencies, without compiling dependencies from source. The native startup check briefly shows the window and exits via `--smoke-test`.

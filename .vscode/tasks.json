@@ -1,0 +1,30 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "UniversalWork: configure Debug",
+      "type": "process",
+      "command": "cmake",
+      "args": [
+        "-S", ".",
+        "-B", "build/debug",
+        "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/build/conan/conan_toolchain.cmake",
+        "-DCMAKE_BUILD_TYPE=Debug",
+        "-DCMAKE_MAP_IMPORTED_CONFIG_DEBUG=Release;",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+      ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "UniversalWork: build Debug",
+      "type": "process",
+      "command": "cmake",
+      "args": ["--build", "build/debug", "--parallel", "4"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "dependsOn": "UniversalWork: configure Debug",
+      "problemMatcher": ["$gcc"],
+      "group": { "kind": "build", "isDefault": true }
+    }
+  ]
+}
